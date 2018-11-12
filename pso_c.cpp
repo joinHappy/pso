@@ -2,42 +2,42 @@
 #include<cmath>
 using namespace std;
 
-#define MAX 100												//¶¨Òå×î´óµü´ú´ÎÊı 
-#define PNUM 50												//¶¨ÒåÖÖÈº¸öÊı 
-#define get_rand(a,b) ((double)rand()/RAND_MAX)*(b-a) + a 	//Ëæ»úÉú³ÉÊı 
+#define MAX 100												//å®šä¹‰æœ€å¤§è¿­ä»£æ¬¡æ•° 
+#define PNUM 50												//å®šä¹‰ç§ç¾¤ä¸ªæ•° 
+#define get_rand(a,b) ((double)rand()/RAND_MAX)*(b-(a)) + a 	//éšæœºç”Ÿæˆæ•° ,è¿™é‡ŒæŠŠaåŠ ä¸Šæ‹¬å·ï¼Œé¿å…äº§ç”Ÿâ€œ--â€need l-value,è‡ªå‡éœ€è¦å·¦å€¼è¿™æ ·çš„é”™è¯¯ã€‚
 #define INF -99999999
 
-double gbest = INF;												//¶¨ÒåÖÖÈº×îÓÅ½â 
-double c1 = 0.5;												//¶¨ÒåÑ§Ï°Òò×Óc1 
-double c2 = 0.5;												//¶¨ÒåÑ§Ï°Òò×Óc2 
+double gbest = INF;												//å®šä¹‰ç§ç¾¤æœ€ä¼˜è§£ 
+double c1 = 0.5;												//å®šä¹‰å­¦ä¹ å› å­c1 
+double c2 = 0.5;												//å®šä¹‰å­¦ä¹ å› å­c2 
 
 struct pso{												
-	double vel;												//Á£×Ó×ÔÉíËÙ¶È 
-	double pos;												//Á£×Ó×ÔÉíÎ»ÖÃ 
-	double pbest;											//×ÔÉí×îÓÅ½â 
+	double vel;												//ç²’å­è‡ªèº«é€Ÿåº¦ 
+	double pos;												//ç²’å­è‡ªèº«ä½ç½® 
+	double pbest;											//è‡ªèº«æœ€ä¼˜è§£ 
 };																	 
 pso a[PNUM];												
 
-double cal_v(double vel,double pos,double p);					//ËÙ¶È¸üĞÂ	
-double func(double x);										//Çó½â	
-double cal_p(double old_p,double v);							//Î»ÖÃ¸üĞÂ	
+double cal_v(double vel,double pos,double p);					//é€Ÿåº¦æ›´æ–°	
+double func(double x);										//æ±‚è§£	
+double cal_p(double old_p,double v);							//ä½ç½®æ›´æ–°	
 
 int main(){	
-	for(int i=0;i < PNUM ;i++){								//Ëæ»ú³õÊ¼»¯Á£×ÓÊôĞÔ 
+	for(int i=0;i < PNUM ;i++){								//éšæœºåˆå§‹åŒ–ç²’å­å±æ€§ 
 		a[i].vel = get_rand(-1,1);
 		a[i].pos = get_rand(0,20);
 		a[i].pbest = func(a[i].pos);
  	}
 	int index = 0;
-	while(index<MAX)										//µü´ú¿ªÊ¼ 
+	while(index<MAX)										//è¿­ä»£å¼€å§‹ 
 	{
-		for(int i=0;i < PNUM ;i++)							//Ñ°ÕÒÈ«¾Ö×îÓÅ½â 
+		for(int i=0;i < PNUM ;i++)							//å¯»æ‰¾å…¨å±€æœ€ä¼˜è§£ 
 		{
 			if(gbest < func(a[i].pos))
 				gbest = func(a[i].pos);
  		}
  		cout<<gbest<<endl;
- 		for(int j=0;j <PNUM ;j++)							//Á£×ÓËÙ¶È¸üĞÂ£¬Î»ÖÃ¸üĞÂ£¬×ÔÉí¼«Öµ¸üĞÂ 
+ 		for(int j=0;j <PNUM ;j++)							//ç²’å­é€Ÿåº¦æ›´æ–°ï¼Œä½ç½®æ›´æ–°ï¼Œè‡ªèº«æå€¼æ›´æ–° 
 	 	{
 	 		a[j].vel = cal_v(a[j].vel,a[j].pos,a[j].pbest);
 	 		a[j].pos = cal_p(a[j].pos,a[j].vel);
@@ -46,10 +46,10 @@ int main(){
 	 	}
 	 	index++;
  	}
- 	cout<<gbest<<endl;										//Êä³ö×îÓÅ½â 
+ 	cout<<gbest<<endl;										//è¾“å‡ºæœ€ä¼˜è§£ 
 }
  
-double cal_v(double vel,double pos,double p){            		//¼ÓÈ¨ËÙ¶È¸üĞÂ¹«Ê½,ËÙ¶È±ß½ç¡¾-1,1¡¿ £¬³¬³ö±ß½ç×ö´¦Àí 
+double cal_v(double vel,double pos,double p){            		//åŠ æƒé€Ÿåº¦æ›´æ–°å…¬å¼,é€Ÿåº¦è¾¹ç•Œã€-1,1ã€‘ ï¼Œè¶…å‡ºè¾¹ç•Œåšå¤„ç† 
 	double nvel = vel*0.8+ c1*get_rand(0,1)*(p - pos)+c2*get_rand(0,1)*(gbest - pos);
 	if(nvel>=1)
 	 	return 1;
@@ -58,11 +58,11 @@ double cal_v(double vel,double pos,double p){            		//¼ÓÈ¨ËÙ¶È¸üĞÂ¹«Ê½,ËÙ
 	else 
 		return nvel;
 }
-double func(double x){										//º¯Êıx*sin(x)*cos(2*x)-2*x*sin(3*x);
+double func(double x){										//å‡½æ•°x*sin(x)*cos(2*x)-2*x*sin(3*x);
 	return	x*sin(x)*cos(2*x)-2*x*sin(3*x);
 }
 
-double cal_p(double old_p,double v){							//¸üĞÂÎ»ÖÃ£¬³¬¹ı±ß½ç×ö´¦Àí,Î»ÖÃÈ¡Öµ·¶Î§¡¾0,20¡¿
+double cal_p(double old_p,double v){							//æ›´æ–°ä½ç½®ï¼Œè¶…è¿‡è¾¹ç•Œåšå¤„ç†,ä½ç½®å–å€¼èŒƒå›´ã€0,20ã€‘
 	double new_p = old_p + v;
 	if(new_p >= 20)
 		return 20;
